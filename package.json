@@ -1,0 +1,43 @@
+{
+  "name": "design-to-production",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "plugins/*"
+  ],
+  "scripts": {
+    "build": "npm run build:figma",
+    "build:web": "npm run build -w @d2p/web",
+    "build:figma": "node scripts/build-figma-plugin.mjs",
+    "dev:web": "npm run dev -w @d2p/web",
+    "verify:figma": "node scripts/verify-figma-fixture.mjs",
+    "verify:page": "node --experimental-strip-types scripts/verify-page-extraction.mjs",
+    "verify:page-browser": "node --experimental-strip-types scripts/verify-page-browser.mjs",
+    "verify:comparison": "node scripts/verify-comparison.mjs",
+    "verify:comparison-run": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-comparison-run.mjs",
+    "verify:comparison-history": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-comparison-history.mjs",
+    "verify:report": "node --experimental-strip-types scripts/verify-report.mjs",
+    "verify:report-route": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-report-route.mjs",
+    "verify:report-pdf": "node --experimental-strip-types scripts/verify-report-pdf.mjs",
+    "verify:api-keys-route": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-api-keys-route.mjs",
+    "verify:api-key-scopes": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-api-key-scopes.mjs",
+    "verify:tenant-usage": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-tenant-usage.mjs",
+    "verify:billing-provider": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-billing-provider.mjs",
+    "verify:comparison-feedback": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-comparison-feedback.mjs",
+    "verify:comparison-tuning": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-comparison-tuning.mjs",
+    "verify:comparison-issue-status": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-comparison-issue-status.mjs",
+    "verify:beta-e2e": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-beta-e2e.mjs",
+    "verify:release-notes": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-release-notes.mjs",
+    "verify:release-management": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-release-management.mjs",
+    "verify:announcements": "node --experimental-strip-types scripts/verify-announcements.mjs",
+    "verify:webhooks-route": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/verify-webhooks-route.mjs",
+    "check": "echo \"Phase 1 scaffold only\"",
+    "lint": "echo \"Add linting in Phase 1.1\"",
+    "test": "echo \"Add tests in Phase 1.1\""
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.4"
+  }
+}
