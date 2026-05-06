@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Design to Production QA</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        padding: 16px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      header {
+        margin-bottom: 12px;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      label {
+        display: grid;
+        gap: 4px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 6px;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        padding: 8px 10px;
+        background: transparent;
+        color: inherit;
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        border-radius: 6px;
+        padding: 8px 10px;
+        background: rgba(127, 127, 127, 0.12);
+        color: inherit;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: rgba(127, 127, 127, 0.2);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 360px;
+        box-sizing: border-box;
+        border-radius: 6px;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        padding: 10px;
+        background: transparent;
+        color: inherit;
+        resize: vertical;
+      }
+
+      .status {
+        min-height: 18px;
+        margin-bottom: 8px;
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Design to Production QA</strong>
+    </header>
+
+    <div class="grid">
+      <label>
+        <span>API base URL</span>
+        <input id="api-base-url" type="url" placeholder="http://127.0.0.1:3001" />
+      </label>
+      <label>
+        <span>JWT</span>
+        <input id="jwt" type="password" placeholder="Bearer token" />
+      </label>
+      <label>
+        <span>Tenant ID</span>
+        <input id="tenant-id" type="text" readonly />
+      </label>
+      <label>
+        <span>Project</span>
+        <select id="project-id"></select>
+      </label>
+      <label>
+        <span>Figma File</span>
+        <select id="figma-file-id"></select>
+      </label>
+    </div>
+
+    <div class="row">
+      <button id="load-session" type="button">Load session</button>
+      <button id="extract-selection" type="button">Export selection</button>
+      <button id="extract-page" type="button">Export page</button>
+      <button id="upload-selection" type="button">Upload selection</button>
+      <button id="copy-json" type="button">Copy JSON</button>
+    </div>
+
+    <div class="status" id="status">Waiting for session.</div>
+    <textarea id="output" spellcheck="false" placeholder="JSON snapshot will appear here"></textarea>
+
+    <script>
+      const statusEl = document.getElementById("status");
+      const outputEl = document.getElementById("output");
+      const apiBaseUrlEl = document.getElementById("api-base-url");
+      const jwtEl = document.getElementById("jwt");
+      const tenantIdEl = document.getElementById("tenant-id");
+      const projectIdEl = document.getElementById("project-id");
+      const figmaFileIdEl = document.getElementById("figma-file-id");
+      const loadSessionButton = document.getElementById("load-session");
+      const selectionButton = document.getElementById("extract-selection");
+      const pageButton = document.getElementById("extract-page");
+      const uploadButton = document.getElementById("upload-selection");
+      const copyButton = document.getElementById("copy-json");
+
+      let sessionContext = null;
+
+      function setStatus(message) {
+        statusEl.textContent = message;
+      }
+
+      function currentSettings() {
+        return {
+          apiBaseUrl: apiBaseUrlEl.value.trim(),
+          jwt: jwtEl.value.trim(),
+          tenantId: tenantIdEl.value.trim(),
+          projectId: projectIdEl.value.trim(),
+          figmaFileId: figmaFileIdEl.value,
+        };
+      }
+
+      function send(type, mode) {
+        parent.postMessage({ pluginMessage: { type, mode, settings: currentSettings() } }, "*");
+      }
+
+      function populateProjects(context) {
+        projectIdEl.innerHTML = "";
+
+        context.projects.forEach((project) => {
+          const option = document.createElement("option");
+          option.value = project.externalId;
+          option.textContent = project.name ? `${project.name} (${project.externalId})` : project.externalId;
+          projectIdEl.appendChild(option);
+        });
+
+        if (context.projects.length > 0) {
+          projectIdEl.value = context.projects[0].externalId;
+          populateFiles(context.projects[0]);
+        } else {
+          figmaFileIdEl.innerHTML = "";
+        }
+      }
+
+      function populateFiles(project) {
+        figmaFileIdEl.innerHTML = "";
+
+        project.figmaFiles.forEach((file) => {
+          const option = document.createElement("option");
+          option.value = file.externalId;
+          option.textContent = file.name ? `${file.name} (${file.externalId})` : file.externalId;
+          figmaFileIdEl.appendChild(option);
+        });
+
+        if (project.figmaFiles.length > 0) {
+          figmaFileIdEl.value = project.figmaFiles[0].externalId;
+        }
+      }
+
+      loadSessionButton.addEventListener("click", () => {
+        setStatus("Loading session...");
+        send("load-session");
+      });
+
+      projectIdEl.addEventListener("change", () => {
+        if (!sessionContext) {
+          return;
+        }
+
+        const selectedProject = sessionContext.projects.find((project) => project.externalId === projectIdEl.value);
+        if (selectedProject) {
+          populateFiles(selectedProject);
+        }
+      });
+
+      selectionButton.addEventListener("click", () => {
+        setStatus("Exporting selection...");
+        send("extract-design", "selection");
+      });
+
+      pageButton.addEventListener("click", () => {
+        setStatus("Exporting page...");
+        send("extract-design", "page");
+      });
+
+      uploadButton.addEventListener("click", () => {
+        setStatus("Uploading selection...");
+        send("upload-design", "selection");
+      });
+
+      copyButton.addEventListener("click", async () => {
+        const value = outputEl.value;
+        if (!value) {
+          setStatus("Nothing to copy.");
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(value);
+          setStatus("Copied JSON to clipboard.");
+        } catch (error) {
+          outputEl.focus();
+          outputEl.select();
+          document.execCommand("copy");
+          setStatus("Copied JSON using fallback.");
+        }
+      });
+
+      window.onmessage = (event) => {
+        const message = event.data.pluginMessage;
+        if (!message) {
+          return;
+        }
+
+        if (message.type === "status") {
+          setStatus(message.message);
+          return;
+        }
+
+        if (message.type === "error") {
+          setStatus(message.message);
+          return;
+        }
+
+        if (message.type === "settings-loaded") {
+          apiBaseUrlEl.value = message.settings.apiBaseUrl || "";
+          jwtEl.value = message.settings.jwt || "";
+          tenantIdEl.value = message.settings.tenantId || "";
+          setStatus("Loaded saved settings.");
+          return;
+        }
+
+        if (message.type === "session-context-loaded") {
+          sessionContext = message.context;
+          tenantIdEl.value = message.context.tenantId;
+          populateProjects(message.context);
+          setStatus("Loaded session context.");
+          return;
+        }
+
+        if (message.type === "snapshot") {
+          outputEl.value = JSON.stringify(message.payload, null, 2);
+          setStatus(`Exported ${message.payload.nodes.length} root nodes.`);
+        }
+      };
+    </script>
+  </body>
+</html>

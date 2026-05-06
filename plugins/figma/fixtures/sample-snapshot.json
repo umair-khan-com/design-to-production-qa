@@ -1,0 +1,86 @@
+{
+  "tenantId": "tenant-placeholder",
+  "projectId": "project-placeholder",
+  "figmaFileId": "figma-file-placeholder",
+  "metadata": {
+    "payloadVersion": "1.0.0",
+    "schemaVersion": "1.0.0",
+    "capturedAt": "2024-01-01T00:00:00.000Z",
+    "producer": "figma-plugin@0.1.0"
+  },
+  "nodes": [
+    {
+      "id": "1:1",
+      "name": "Page 1",
+      "type": "FRAME",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1024
+      },
+      "visible": true,
+      "opacity": 1,
+      "fills": [],
+      "strokes": [],
+      "text": null,
+      "layout": {
+        "layoutMode": "VERTICAL",
+        "itemSpacing": 16,
+        "paddingTop": 24,
+        "paddingRight": 24,
+        "paddingBottom": 24,
+        "paddingLeft": 24
+      },
+      "component": {},
+      "styles": {
+        "childCount": 1,
+        "fillCount": 0,
+        "strokeCount": 0,
+        "hasText": false,
+        "layoutMode": "VERTICAL",
+        "fontFamily": null,
+        "componentId": null
+      },
+      "children": [
+        {
+          "id": "1:2",
+          "name": "Primary Button",
+          "type": "RECTANGLE",
+          "bounds": {
+            "x": 24,
+            "y": 24,
+            "width": 120,
+            "height": 40
+          },
+          "visible": true,
+          "opacity": 1,
+          "fills": [
+            {
+              "type": "SOLID",
+              "color": {
+                "r": 0.1,
+                "g": 0.2,
+                "b": 0.9,
+                "a": 1
+              }
+            }
+          ],
+          "strokes": [],
+          "text": null,
+          "component": {},
+          "styles": {
+            "childCount": 0,
+            "fillCount": 1,
+            "strokeCount": 0,
+            "hasText": false,
+            "layoutMode": "NONE",
+            "fontFamily": null,
+            "componentId": null
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}

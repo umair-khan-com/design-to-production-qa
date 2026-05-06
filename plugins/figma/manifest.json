@@ -1,0 +1,7 @@
+{
+  "name": "Design to Production QA",
+  "id": "design-to-production-qa",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}
