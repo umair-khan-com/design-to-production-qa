@@ -1,0 +1,48 @@
+{
+  "tenantId": "tenant-placeholder",
+  "projectId": "project-placeholder",
+  "pageUrl": "http://localhost:3000",
+  "schemaVersion": "1.0.0",
+  "roots": [
+    {
+      "key": "1:1",
+      "tagName": "main",
+      "text": null,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 1024
+      },
+      "visible": true,
+      "styles": {
+        "position": "relative",
+        "width": "1440px",
+        "height": "1024px"
+      },
+      "children": [
+        {
+          "key": "1:2",
+          "tagName": "button",
+          "text": null,
+          "box": {
+            "x": 24,
+            "y": 24,
+            "width": 120,
+            "height": 40
+          },
+          "visible": true,
+          "styles": {
+            "position": "absolute",
+            "left": "24px",
+            "top": "24px",
+            "width": "120px",
+            "height": "40px",
+            "background-color": "rgb(26, 51, 230)"
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}

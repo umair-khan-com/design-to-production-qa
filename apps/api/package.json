@@ -1,0 +1,22 @@
+{
+  "name": "@d2p/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --experimental-strip-types src/server.ts",
+    "migrate": "node --experimental-strip-types src/migrate.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/jwt": "^10.0.0",
+    "@d2p/shared": "file:../../packages/shared",
+    "cheerio": "^1.2.0",
+    "fastify": "^5.8.5",
+    "pg": "^8.20.0",
+    "playwright": "^1.59.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21"
+  }
+}
